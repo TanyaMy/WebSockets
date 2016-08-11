@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section scripts{
+    <script type="text/javascript">
+    var webSocket;
+    $().ready(function () {
+        webSocket = new WebSocket("ws://localhost:5000");
+        webSocket.onopen = function () {
+            alert("Status: connected");
+            webSocket.send("Hi!");
+        };
+        webSocket.onmessage = function (evt) {
+            $("#list").append("<li>" + evt.data + "</li>");
+        };
+        webSocket.onerror = function (evt) {
+            alert(evt.message);
+        };
+        webSocket.onclose = function () {
+           alert("Status: disconnected");
+        };
+        $("#btnSend").click(function () {
+            if (webSocket.readyState == WebSocket.OPEN) {
+                webSocket.send($("#textInput").val());
+            }
+            else {
+              alert("Status: connection is closed");
+            }
+        });
+    });
+</script>
+}
+<br/>
+<div class="container">
+    <input type="text" id="textInput" />
+    <button id="btnSend" class="btn btn-success">Send</button>
+
+    <ul id="list">
+        
+    </ul>
+
+</div>
